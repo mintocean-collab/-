@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>정책자금 상담신청</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1B3A6B;
+      --navy-dark: #122a52;
+      --navy-light: #2a4f8f;
+      --gold: #C9A84C;
+      --gold-light: #e0c070;
+      --bg: #F8F7F4;
+      --white: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #6b7280;
+      --border: #e2e0db;
+      --error: #dc2626;
+      --success: #16a34a;
+      --radius: 10px;
+      --shadow: 0 4px 24px rgba(27,58,107,0.10);
+      --shadow-lg: 0 8px 40px rgba(27,58,107,0.15);
+    }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1280px; margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 18px; height: 18px; fill: white; }
+    .logo-text {
+      font-family: 'Noto Serif KR', serif;
+      font-weight: 700; font-size: 1rem;
+      color: var(--navy);
+    }
+    .header-sub { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, #0f2347 0%, #1B3A6B 50%, #2a4f8f 100%);
+      padding: 3.5rem 1.5rem 3rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner { max-width: 1280px; margin: 0 auto; position: relative; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold-light);
+      font-size: 0.78rem; font-weight: 500;
+      padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    .hero-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .hero h1 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; color: white;
+      line-height: 1.2; margin-bottom: 0.8rem;
+    }
+    .hero p { color: rgba(255,255,255,0.75); font-size: 0.95rem; line-height: 1.7; max-width: 520px; }
+
+    /* ── Main Layout ── */
+    .main-wrap {
+      max-width: 1280px; margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .main-wrap { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: var(--navy);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      position: sticky; top: 76px;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-title {
+      font-size: 0.72rem; font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+    }
+    .step-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 0.7rem 0.8rem; border-radius: 8px;
+      cursor: default; transition: background 0.2s;
+      margin-bottom: 2px;
+    }
+    .step-item.active { background: rgba(255,255,255,0.12); }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.4);
+      transition: all 0.3s;
+    }
+    .step-item.active .step-num { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+    .step-item.completed .step-num { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: white; }
+    .step-label { font-size: 0.88rem; font-weight: 500; color: rgba(255,255,255,0.5); padding-top: 4px; }
+    .step-item.active .step-label { color: white; }
+    .step-item.completed .step-label { color: rgba(255,255,255,0.7); }
+    .step-connector { width: 2px; height: 20px; background: rgba(255,255,255,0.1); margin-left: 22px; }
+
+    /* ── Form Card ── */
+    .form-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .form-header {
+      padding: 1.5rem 1.8rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-header h2 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 2px;
+    }
+    .form-header p { font-size: 0.82rem; color: var(--text-muted); }
+    .progress-bar {
+      display: flex; gap: 4px; margin-top: 1rem;
+    }
+    .progress-seg {
+      height: 4px; border-radius: 2px; flex: 1;
+      background: #e5e7eb; transition: background 0.4s;
+    }
+    .progress-seg.done { background: var(--navy); }
+    .progress-seg.active { background: var(--gold); }
+
+    .form-body { padding: 1.8rem; }
+
+    /* ── Field ── */
+    .field { margin-bottom: 1.2rem; }
+    .field-label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 500;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .field-label .req { color: var(--error); margin-left: 2px; }
+    .field-label svg { width: 14px; height: 14px; color: var(--navy); opacity: 0.6; }
+    .field-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .field-error { font-size: 0.75rem; color: var(--error); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+
+    input[type="text"], input[type="tel"], select {
+      width: 100%; padding: 0.6rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.9rem; color: var(--text);
+      background: var(--white);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none; -webkit-appearance: none;
+    }
+    input[type="text"]:focus, input[type="tel"]:focus, select:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(27,58,107,0.08);
+    }
+    input.error, select.error { border-color: var(--error); }
+    .select-wrap { position: relative; }
+    .select-wrap select { padding-right: 2.2rem; }
+    .select-wrap::after {
+      content: '';
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--text-muted);
+      pointer-events: none;
+    }
+    .location-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* ── Buttons ── */
+    .form-footer {
+      padding: 1.2rem 1.8rem 1.8rem;
+      display: flex; justify-content: space-between; gap: 10px;
+    }
+    .btn {
+      padding: 0.65rem 1.5rem; border-radius: 8px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-primary {
+      background: var(--navy); color: white; flex: 1;
+      justify-content: center;
+    }
+    .btn-primary:hover { background: var(--navy-dark); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary {
+      background: transparent; color: var(--text-muted);
+      border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--bg); color: var(--text); }
+
+    /* ── Privacy ── */
+    .privacy-box {
+      border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 1rem;
+      transition: all 0.2s;
+    }
+    .privacy-box.agreed { border-color: rgba(27,58,107,0.3); background: rgba(27,58,107,0.04); }
+    .privacy-box.error { border-color: var(--error); background: rgba(220,38,38,0.04); }
+    .privacy-row { display: flex; align-items: flex-start; gap: 10px; }
+    .privacy-row input[type="checkbox"] {
+      width: 18px; height: 18px; flex-shrink: 0;
+      margin-top: 1px; cursor: pointer;
+      accent-color: var(--navy);
+    }
+    .privacy-text { font-size: 0.85rem; line-height: 1.5; }
+    .privacy-link { color: var(--navy); font-weight: 600; cursor: pointer; text-decoration: underline; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: var(--radius);
+      max-width: 560px; width: 100%;
+      max-height: 80vh; overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-family: 'Noto Serif KR', serif; font-size: 1rem; font-weight: 700; color: var(--navy); }
+    .modal-close { background: none; border: none; cursor: pointer; font-size: 1.3rem; color: var(--text-muted); }
+    .modal-body { padding: 1.5rem; font-size: 0.85rem; line-height: 1.8; color: var(--text); }
+    .modal-body h4 { font-weight: 700; margin: 1rem 0 0.4rem; color: var(--navy); }
+    .modal-body p { margin-bottom: 0.6rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+    .btn-agree { background: var(--navy); color: white; padding: 0.55rem 1.2rem; border-radius: 7px; border: none; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 0.88rem; font-weight: 600; }
+
+    /* ── Success ── */
+    .success-card {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 3rem 2rem;
+      text-align: center;
+    }
+    .success-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(22,163,74,0.1);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .success-icon svg { width: 36px; height: 36px; stroke: var(--success); }
+    .success-card h2 { font-family: 'Noto Serif KR', serif; font-size: 1.4rem; font-weight: 700; color: var(--navy); margin-bottom: 0.6rem; }
+    .success-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 2rem; }
+    .summary-grid {
+      background: var(--bg); border-radius: 8px;
+      padding: 1.2rem; margin-bottom: 2rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1.5rem;
+      text-align: left;
+    }
+    .summary-item { font-size: 0.82rem; }
+    .summary-item span:first-child { color: var(--text-muted); display: block; margin-bottom: 1px; }
+    .summary-item span:last-child { font-weight: 600; color: var(--text); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 300;
+      padding: 0.8rem 1.2rem; border-radius: 8px;
+      font-size: 0.88rem; font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.3s ease;
+      max-width: 320px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: var(--success); color: white; }
+    .toast.error { background: var(--error); color: white; }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="2"/></svg>
+      </div>
+      <span class="logo-text">정책자금 상담센터</span>
+    </a>
+    <span class="header-sub">중소기업·소상공인 정책자금 전문 상담</span>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">선착순 상담 신청 접수 중</div>
+    <h1>정책자금 상담신청</h1>
+    <p>중소기업·소상공인을 위한 정부 정책자금 전문 상담 서비스입니다.<br>아래 양식을 작성하시면 담당 전문가가 빠르게 연락드립니다.</p>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main-wrap">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-title">신청 진행 단계</div>
+    <div class="step-item active" id="sidebar-step-1">
+      <div class="step-num">1</div>
+      <div class="step-label">신청인 정보</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="sidebar-step-2">
+      <div class="step-num">2</div>
+      <div class="step-label">사업체 정보</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="sidebar-step-3">
+      <div class="step-num">3</div>
+      <div class="step-label">자금 및 상담</div>
+    </div>
+  </aside>
+
+  <!-- Form -->
+  <div id="form-area">
+
+    <!-- Step 1 -->
+    <div class="form-card" id="step-1">
+      <div class="form-header">
+        <h2>신청인 정보</h2>
+        <p>1 / 3 단계</p>
+        <div class="progress-bar">
+          <div class="progress-seg active"></div>
+          <div class="progress-seg"></div>
+          <div class="progress-seg"></div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            구분 <span class="req">*</span>
+          </label>
+          <div class="select-wrap">
+            <select id="f-category">
+              <option value="">사업자 유형을 선택해주세요</option>
+              <option>개인사업자</option>
+              <option>법인사업자</option>
+              <option>예비창업자</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-category" style="display:none">구분을 선택해주세요.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            이름 <span class="req">*</span>
+          </label>
+          <input type="text" id="f-name" placeholder="성함을 입력해주세요" />
+          <div class="field-error" id="err-name" style="display:none">이름을 입력해주세요.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.08 1.18 2 2 0 012.06 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+            연락처 <span class="req">*</span>
+          </label>
+          <input type="tel" id="f-phone" placeholder="010-0000-0000" />
+          <div class="field-hint">숫자만 입력하시면 자동으로 형식이 맞춰집니다.</div>
+          <div class="field-error" id="err-phone" style="display:none">올바른 연락처를 입력해주세요.</div>
+        </div>
+      </div>
+      <div class="form-footer">
+        <button class="btn btn-primary" onclick="nextStep(1)">다음 단계 →</button>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="form-card" id="step-2" style="display:none">
+      <div class="form-header">
+        <h2>사업체 정보</h2>
+        <p>2 / 3 단계</p>
+        <div class="progress-bar">
+          <div class="progress-seg done"></div>
+          <div class="progress-seg active"></div>
+          <div class="progress-seg"></div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            업종 <span class="req">*</span>
+          </label>
+          <div class="select-wrap">
+            <select id="f-industry">
+              <option value="">업종을 선택해주세요</option>
+              <option>음식점 및 카페</option>
+              <option>제조업</option>
+              <option>도소매업</option>
+              <option>서비스업</option>
+              <option>건설업</option>
+              <option>그 외 사업자</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-industry" style="display:none">업종을 선택해주세요.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            사업장 위치 <span class="req">*</span>
+          </label>
+          <div class="location-row">
+            <div class="select-wrap">
+              <select id="f-location" onchange="onSidoChange()">
+                <option value="">시·도 선택</option>
+                <option>서울특별시</option><option>부산광역시</option><option>대구광역시</option>
+                <option>인천광역시</option><option>광주광역시</option><option>대전광역시</option>
+                <option>울산광역시</option><option>세종특별자치시</option><option>경기도</option>
+                <option>강원특별자치도</option><option>충청북도</option><option>충청남도</option>
+                <option>전북특별자치도</option><option>전라남도</option><option>경상북도</option>
+                <option>경상남도</option><option>제주특별자치도</option>
+              </select>
+            </div>
+            <div class="select-wrap">
+              <select id="f-sigungu" disabled>
+                <option value="">시·군·구 선택</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-error" id="err-location" style="display:none">시·도와 시·군·구를 모두 선택해주세요.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            상호명 <span class="req">*</span>
+          </label>
+          <input type="text" id="f-companyName" placeholder="사업체 상호명을 입력해주세요" />
+          <div class="field-error" id="err-companyName" style="display:none">상호명을 입력해주세요.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+            사업자 등록번호 <span class="req">*</span>
+          </label>
+          <input type="text" id="f-bizNumber" placeholder="000-00-00000" maxlength="12" />
+          <div class="field-hint">숫자만 입력하시면 자동으로 형식이 맞춰집니다.</div>
+          <div class="field-error" id="err-bizNumber" style="display:none">올바른 사업자 등록번호를 입력해주세요. (10자리)</div>
+        </div>
+      </div>
+      <div class="form-footer">
+        <button class="btn btn-secondary" onclick="prevStep(2)">← 이전</button>
+        <button class="btn btn-primary" onclick="nextStep(2)">다음 단계 →</button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="form-card" id="step-3" style="display:none">
+      <div class="form-header">
+        <h2>자금 및 상담</h2>
+        <p>3 / 3 단계</p>
+        <div class="progress-bar">
+          <div class="progress-seg done"></div>
+          <div class="progress-seg done"></div>
+          <div class="progress-seg active"></div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            전년도 매출액 <span class="req">*</span>
+          </label>
+          <div class="select-wrap">
+            <select id="f-lastYearRevenue">
+              <option value="">전년도 매출 규모를 선택해주세요</option>
+              <option>1천 - 5천 만</option><option>5천 - 1억</option><option>1 - 2억</option>
+              <option>2 - 3억</option><option>3 - 4억</option><option>4 - 5억</option>
+              <option>5 - 10억</option><option>10억 이상</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-lastYearRevenue" style="display:none">전년도 매출액을 선택해주세요.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            필요 자금 규모 <span class="req">*</span>
+          </label>
+          <div class="select-wrap">
+            <select id="f-fundSize">
+              <option value="">필요한 자금 규모를 선택해주세요</option>
+              <option>1천 - 5천 만</option><option>5천 - 1억</option><option>1 - 2억</option>
+              <option>2 - 3억</option><option>3 - 4억</option><option>4 - 5억</option>
+              <option>5 - 10억</option><option>10억 이상</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-fundSize" style="display:none">필요 자금 규모를 선택해주세요.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            원하는 상담 시간 <span class="req">*</span>
+          </label>
+          <div class="select-wrap">
+            <select id="f-consultTime">
+              <option value="">상담 가능한 시간대를 선택해주세요</option>
+              <option>오전 9시 - 10시</option><option>오전 10시 - 11시</option>
+              <option>오전 11시 - 12시</option><option>오후 1시 - 2시</option>
+              <option>오후 2시 - 3시</option><option>오후 3시 - 4시</option>
+              <option>오후 4시 - 5시</option><option>시간 무관</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-consultTime" style="display:none">원하는 상담 시간을 선택해주세요.</div>
+        </div>
+
+        <!-- Privacy -->
+        <div class="field" style="margin-top:1.5rem">
+          <div class="privacy-box" id="privacy-box">
+            <div class="privacy-row">
+              <input type="checkbox" id="privacy-check" onchange="onPrivacyChange()" />
+              <div class="privacy-text">
+                <strong>개인정보 수집 및 이용에 동의합니다.</strong> (필수)<br>
+                수집 항목: 이름, 연락처, 사업체 정보 등 상담 신청 시 입력한 모든 정보<br>
+                <span class="privacy-link" onclick="openPrivacyModal()">개인정보처리방침 전문 보기 →</span>
+              </div>
+            </div>
+          </div>
+          <div class="field-error" id="err-privacy" style="display:none">개인정보 수집 및 이용에 동의해주세요.</div>
+        </div>
+      </div>
+      <div class="form-footer">
+        <button class="btn btn-secondary" onclick="prevStep(3)">← 이전</button>
+        <button class="btn btn-primary" id="submit-btn" onclick="handleSubmit()">
+          <span id="submit-text">상담 신청하기</span>
+          <div class="spinner" id="submit-spinner" style="display:none"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-card" id="step-success" style="display:none">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h2>상담 신청이 완료되었습니다!</h2>
+      <p>입력하신 연락처로 담당 전문가가<br>영업일 기준 1~2일 내에 연락드립니다.</p>
+      <div class="summary-grid" id="summary-grid"></div>
+      <button class="btn btn-primary" style="margin:0 auto;display:flex" onclick="resetForm()">새로 신청하기</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="modal-overlay" id="privacy-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>개인정보처리방침</h3>
+      <button class="modal-close" onclick="closePrivacyModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h4>1. 수집하는 개인정보 항목</h4>
+      <p>이름, 연락처, 업종, 사업장 위치, 상호명, 사업자 등록번호, 전년도 매출액, 필요 자금 규모, 원하는 상담 시간</p>
+      <h4>2. 개인정보의 수집 및 이용 목적</h4>
+      <p>정책자금 상담 서비스 제공, 상담 일정 조율, 맞춤형 정책자금 정보 안내</p>
+      <h4>3. 개인정보의 보유 및 이용 기간</h4>
+      <p>상담 완료 후 1년간 보관 후 파기. 단, 관련 법령에 따라 보존이 필요한 경우 해당 기간 동안 보관합니다.</p>
+      <h4>4. 개인정보의 제3자 제공</h4>
+      <p>수집된 개인정보는 제3자에게 제공되지 않습니다. 단, 법령에 의거하거나 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우는 예외로 합니다.</p>
+      <h4>5. 동의 거부 권리 및 불이익</h4>
+      <p>귀하는 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 상담 신청 서비스 이용이 제한될 수 있습니다.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn" onclick="closePrivacyModal()">닫기</button>
+      <button class="btn-agree" onclick="agreeAndClose()">동의하고 닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── GAS URL ──────────────────────────────────────────────────────────────────
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzFOHbCPOn3dznkIS2BfyW8r5TcDriD1IxEiFU8bLvHjCaCww8jWBOkSMT7IASjbsQk/exec";
+
+// ── 시·군·구 데이터 ───────────────────────────────────────────────────────────
+const SIGUNGU_MAP = {
+  "서울특별시": ["종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구","노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구","관악구","서초구","강남구","송파구","강동구"],
+  "부산광역시": ["중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군"],
+  "대구광역시": ["중구","동구","서구","남구","북구","수성구","달서구","달성군","군위군"],
+  "인천광역시": ["중구","동구","미추홀구","연수구","남동구","부평구","계양구","서구","강화군","옹진군"],
+  "광주광역시": ["동구","서구","남구","북구","광산구"],
+  "대전광역시": ["동구","중구","서구","유성구","대덕구"],
+  "울산광역시": ["중구","남구","동구","북구","울주군"],
+  "세종특별자치시": ["세종시 전체"],
+  "경기도": ["수원시","성남시","의정부시","안양시","부천시","광명시","평택시","동두천시","안산시","고양시","과천시","구리시","남양주시","오산시","시흥시","군포시","의왕시","하남시","용인시","파주시","이천시","안성시","김포시","화성시","광주시","양주시","포천시","여주시","연천군","가평군","양평군"],
+  "강원특별자치도": ["춘천시","원주시","강릉시","동해시","태백시","속초시","삼척시","홍천군","횡성군","영월군","평창군","정선군","철원군","화천군","양구군","인제군","고성군","양양군"],
+  "충청북도": ["청주시","충주시","제천시","보은군","옥천군","영동군","증평군","진천군","괴산군","음성군","단양군"],
+  "충청남도": ["천안시","공주시","보령시","아산시","서산시","논산시","계룡시","당진시","금산군","부여군","서천군","청양군","홍성군","예산군","태안군"],
+  "전북특별자치도": ["전주시","군산시","익산시","정읍시","남원시","김제시","완주군","진안군","무주군","장수군","임실군","순창군","고창군","부안군"],
+  "전라남도": ["목포시","여수시","순천시","나주시","광양시","담양군","곡성군","구례군","고흥군","보성군","화순군","장흥군","강진군","해남군","영암군","무안군","함평군","영광군","장성군","완도군","진도군","신안군"],
+  "경상북도": ["포항시","경주시","김천시","안동시","구미시","영주시","영천시","상주시","문경시","경산시","의성군","청송군","영양군","영덕군","청도군","고령군","성주군","칠곡군","예천군","봉화군","울진군","울릉군"],
+  "경상남도": ["창원시","진주시","통영시","사천시","김해시","밀양시","거제시","양산시","의령군","함안군","창녕군","고성군","남해군","하동군","산청군","함양군","거창군","합천군"],
+  "제주특별자치도": ["제주시","서귀포시"]
+};
+
+// ── State ────────────────────────────────────────────────────────────────────
+let currentStep = 1;
+
+// ── Phone formatting ─────────────────────────────────────────────────────────
+document.getElementById('f-phone').addEventListener('input', function() {
+  const digits = this.value.replace(/\D/g,'').slice(0,11);
+  if(digits.length<=3) this.value=digits;
+  else if(digits.length<=7) this.value=digits.slice(0,3)+'-'+digits.slice(3);
+  else this.value=digits.slice(0,3)+'-'+digits.slice(3,7)+'-'+digits.slice(7);
+});
+
+// ── BizNumber formatting ──────────────────────────────────────────────────────
+document.getElementById('f-bizNumber').addEventListener('input', function() {
+  const digits = this.value.replace(/\D/g,'').slice(0,10);
+  if(digits.length<=3) this.value=digits;
+  else if(digits.length<=5) this.value=digits.slice(0,3)+'-'+digits.slice(3);
+  else this.value=digits.slice(0,3)+'-'+digits.slice(3,5)+'-'+digits.slice(5);
+});
+
+// ── 시·군·구 연동 ─────────────────────────────────────────────────────────────
+function onSidoChange() {
+  const sido = document.getElementById('f-location').value;
+  const sigunguSel = document.getElementById('f-sigungu');
+  sigunguSel.innerHTML = '<option value="">시·군·구 선택</option>';
+  if(sido && SIGUNGU_MAP[sido]) {
+    sigunguSel.disabled = false;
+    SIGUNGU_MAP[sido].forEach(sg => {
+      const opt = document.createElement('option');
+      opt.value = sg; opt.textContent = sg;
+      sigunguSel.appendChild(opt);
+    });
+  } else {
+    sigunguSel.disabled = true;
+  }
+}
+
+// ── Privacy ───────────────────────────────────────────────────────────────────
+function onPrivacyChange() {
+  const checked = document.getElementById('privacy-check').checked;
+  const box = document.getElementById('privacy-box');
+  box.className = 'privacy-box' + (checked ? ' agreed' : '');
+  if(checked) document.getElementById('err-privacy').style.display='none';
+}
+function openPrivacyModal() { document.getElementById('privacy-modal').classList.add('open'); }
+function closePrivacyModal() { document.getElementById('privacy-modal').classList.remove('open'); }
+function agreeAndClose() {
+  document.getElementById('privacy-check').checked = true;
+  onPrivacyChange();
+  closePrivacyModal();
+}
+
+// ── Sidebar update ────────────────────────────────────────────────────────────
+function updateSidebar(step) {
+  for(let i=1;i<=3;i++) {
+    const el = document.getElementById('sidebar-step-'+i);
+    el.className = 'step-item';
+    if(i===step) el.classList.add('active');
+    else if(i<step) el.classList.add('completed');
+  }
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
+function showErr(id, show) {
+  document.getElementById('err-'+id).style.display = show ? 'flex' : 'none';
+  const field = document.getElementById('f-'+id);
+  if(field) field.classList.toggle('error', show);
+}
+
+function validateStep(step) {
+  let ok = true;
+  if(step===1) {
+    const cat = document.getElementById('f-category').value;
+    const name = document.getElementById('f-name').value.trim();
+    const phone = document.getElementById('f-phone').value.replace(/\D/g,'');
+    showErr('category', !cat); if(!cat) ok=false;
+    showErr('name', !name); if(!name) ok=false;
+    const phoneErr = !phone || phone.length<10;
+    showErr('phone', phoneErr); if(phoneErr) ok=false;
+  }
+  if(step===2) {
+    const ind = document.getElementById('f-industry').value;
+    const loc = document.getElementById('f-location').value;
+    const sg = document.getElementById('f-sigungu').value;
+    const comp = document.getElementById('f-companyName').value.trim();
+    const biz = document.getElementById('f-bizNumber').value.replace(/\D/g,'');
+    showErr('industry', !ind); if(!ind) ok=false;
+    const locErr = !loc || !sg;
+    showErr('location', locErr); if(locErr) ok=false;
+    showErr('companyName', !comp); if(!comp) ok=false;
+    const bizErr = !biz || biz.length<10;
+    showErr('bizNumber', bizErr); if(bizErr) ok=false;
+  }
+  if(step===3) {
+    const rev = document.getElementById('f-lastYearRevenue').value;
+    const fund = document.getElementById('f-fundSize').value;
+    const time = document.getElementById('f-consultTime').value;
+    showErr('lastYearRevenue', !rev); if(!rev) ok=false;
+    showErr('fundSize', !fund); if(!fund) ok=false;
+    showErr('consultTime', !time); if(!time) ok=false;
+  }
+  return ok;
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function nextStep(from) {
+  if(!validateStep(from)) return;
+  document.getElementById('step-'+from).style.display='none';
+  currentStep = from+1;
+  document.getElementById('step-'+currentStep).style.display='block';
+  updateSidebar(currentStep);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function prevStep(from) {
+  document.getElementById('step-'+from).style.display='none';
+  currentStep = from-1;
+  document.getElementById('step-'+currentStep).style.display='block';
+  updateSidebar(currentStep);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast '+type;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+async function handleSubmit() {
+  if(!validateStep(3)) return;
+  if(!document.getElementById('privacy-check').checked) {
+    document.getElementById('err-privacy').style.display='flex';
+    document.getElementById('privacy-box').className='privacy-box error';
+    return;
+  }
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  document.getElementById('submit-text').style.display='none';
+  document.getElementById('submit-spinner').style.display='block';
+
+  const loc = document.getElementById('f-location').value;
+  const sg = document.getElementById('f-sigungu').value;
+
+  const payload = {
+    구분: document.getElementById('f-category').value,
+    이름: document.getElementById('f-name').value,
+    연락처: document.getElementById('f-phone').value,
+    업종: document.getElementById('f-industry').value,
+    사업장위치: (loc+' '+sg).trim(),
+    상호명: document.getElementById('f-companyName').value,
+    사업자등록번호: document.getElementById('f-bizNumber').value,
+    전년도매출액: document.getElementById('f-lastYearRevenue').value,
+    필요자금규모: document.getElementById('f-fundSize').value,
+    원하는상담시간: document.getElementById('f-consultTime').value,
+    신청일시: new Date().toLocaleString('ko-KR'),
+  };
+
+  try {
+    if(GAS_URL) {
+      await fetch(GAS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    } else {
+      await new Promise(r=>setTimeout(r,1500));
+    }
+    showSuccess(payload);
+    showToast('상담 신청이 완료되었습니다!');
+  } catch(e) {
+    showToast('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', 'error');
+    btn.disabled=false;
+    document.getElementById('submit-text').style.display='block';
+    document.getElementById('submit-spinner').style.display='none';
+  }
+}
+
+function showSuccess(p) {
+  document.getElementById('step-3').style.display='none';
+  const grid = document.getElementById('summary-grid');
+  const items = [
+    ['구분', p.구분], ['이름', p.이름], ['연락처', p.연락처],
+    ['업종', p.업종], ['사업장 위치', p.사업장위치], ['상호명', p.상호명],
+    ['사업자 등록번호', p.사업자등록번호], ['전년도 매출액', p.전년도매출액],
+    ['필요 자금 규모', p.필요자금규모], ['상담 시간', p.원하는상담시간],
+  ];
+  grid.innerHTML = items.map(([k,v])=>`<div class="summary-item"><span>${k}</span><span>${v||'—'}</span></div>`).join('');
+  document.getElementById('step-success').style.display='block';
+  // Update sidebar all completed
+  for(let i=1;i<=3;i++) {
+    const el = document.getElementById('sidebar-step-'+i);
+    el.className = 'step-item completed';
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetForm() {
+  ['f-category','f-name','f-phone','f-industry','f-location','f-sigungu',
+   'f-companyName','f-bizNumber','f-lastYearRevenue','f-fundSize','f-consultTime']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.value=''; el.classList.remove('error'); }
+    });
+  document.getElementById('f-sigungu').disabled=true;
+  document.getElementById('privacy-check').checked=false;
+  document.getElementById('privacy-box').className='privacy-box';
+  ['category','name','phone','industry','location','companyName','bizNumber',
+   'lastYearRevenue','fundSize','consultTime','privacy']
+    .forEach(id => { const e=document.getElementById('err-'+id); if(e) e.style.display='none'; });
+  document.getElementById('step-success').style.display='none';
+  document.getElementById('step-1').style.display='block';
+  document.getElementById('submit-btn').disabled=false;
+  document.getElementById('submit-text').style.display='block';
+  document.getElementById('submit-spinner').style.display='none';
+  currentStep=1;
+  updateSidebar(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
